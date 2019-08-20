@@ -13,7 +13,6 @@ figma.ui.onmessage = msg => {
      
     head.fontSize = 64;
     desc.fontSize = 36;
-
     head.characters = msg.name;
     desc.characters = msg.desc;
     let cnt = (frame.width/2 )- (desc.width/2);
