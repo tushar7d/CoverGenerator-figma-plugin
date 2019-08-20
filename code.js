@@ -15,7 +15,7 @@ figma.ui.onmessage = msg => {
     let setSpace = (node, spacex, spacey) => { node.relativeTransform = [[1, 0, spacex], [0, 1, spacey]]; };
     let loadFont = () => __awaiter(this, void 0, void 0, function* () {
         yield figma.loadFontAsync({ family: "Roboto", style: "Regular" });
-        head.fontSize = 96;
+        head.fontSize = 64;
         desc.fontSize = 36;
         head.characters = msg.name;
         desc.characters = msg.desc;

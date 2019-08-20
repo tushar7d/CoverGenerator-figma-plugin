@@ -10,7 +10,8 @@ figma.ui.onmessage = msg => {
 
   let loadFont = async () => {
     await figma.loadFontAsync({ family: "Roboto", style: "Regular" });
-    head.fontSize = 96;
+     
+    head.fontSize = 64;
     desc.fontSize = 36;
 
     head.characters = msg.name;
