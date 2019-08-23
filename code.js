@@ -11,7 +11,7 @@ let cover = figma.createPage();
 let frame = figma.createFrame();
 let head = figma.createText();
 let desc = figma.createText();
-let setSpace = (node, spacex, spacey) => { node.relativeTransform = [[1, 0, spacex], [0, 1, spacey]]; };
+let setPosition = (node, spacex, spacey) => { node.relativeTransform = [[1, 0, spacex], [0, 1, spacey]]; };
 let xCalculator = (container, element) => {
     return ((container.width / 2) - (element.width / 2));
 };
@@ -19,10 +19,10 @@ let yCalculator = (container, element) => {
     return ((container.height / 2) - (element.height / 2));
 };
 let loadFontHead = (msg) => __awaiter(this, void 0, void 0, function* () {
-    yield figma.loadFontAsync({ family: "Roboto", style: "Regular" });
+    yield figma.loadFontAsync({ family: "Roboto", style: "Bold" });
+    head.fontName = { family: "Roboto", style: "Bold" };
     head.characters = msg.name;
     head.fontSize = 74;
-    head.fontName = { family: "Roboto", style: "Regular" };
     head.textAlignHorizontal = "CENTER";
 });
 let loadFontDesc = (msg) => __awaiter(this, void 0, void 0, function* () {
@@ -33,20 +33,20 @@ let loadFontDesc = (msg) => __awaiter(this, void 0, void 0, function* () {
     let headX = xCalculator(frame, head);
     let headY = (yCalculator(frame, head) - 30);
     let descY = headY + head.height + 20;
-    setSpace(head, headX, headY);
-    setSpace(desc, descX, descY);
+    setPosition(head, headX, headY);
+    setPosition(desc, descX, descY);
     head.textAlignHorizontal = "CENTER";
 });
-figma.ui.onmessage = msg => {
+figma.ui.onmessage = (msg) => __awaiter(this, void 0, void 0, function* () {
     frame.resize(1240, 640);
-    loadFontHead(msg);
-    loadFontDesc(msg);
     cover.name = "Cover";
     frame.name = "00";
+    yield loadFontHead(msg);
+    yield loadFontDesc(msg);
     frame.appendChild(head);
     frame.appendChild(desc);
     cover.appendChild(frame);
     figma.root.insertChild(0, cover);
     figma.currentPage = cover;
     figma.closePlugin();
-};
+});
