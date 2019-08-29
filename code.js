@@ -48,6 +48,15 @@ let loadStat = (msg) => __awaiter(this, void 0, void 0, function* () {
     let tagBgHeight = stat.height + 30;
     tagBg.resize(tagBgWidth, tagBgHeight);
     tagBg.cornerRadius = 500;
+    function clone(val) {
+        return JSON.parse(JSON.stringify(val));
+    }
+    let txtfills = clone(stat.fills);
+    txtfills[0].color = { r: 1, g: 1, b: 1 };
+    stat.fills = txtfills;
+    let Bgfills = clone(tagBg.fills);
+    Bgfills[0].color = { r: 0, g: 90 / 255, b: 235 / 255 };
+    tagBg.fills = Bgfills;
 });
 let setObjects = (msg) => __awaiter(this, void 0, void 0, function* () {
     yield loadFontHead(msg);
