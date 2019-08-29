@@ -1,65 +1,128 @@
-figma.showUI(__html__, { width: 250, height: 150 });
 
-let cover = figma.createPage();
-let frame = figma.createFrame();
-let head = figma.createText();
-let desc = figma.createText();
+//creating figma UI
+figma.showUI(__html__, { width: 300, height: 300 });
 
-let setPosition = (node, spacex, spacey) => { node.relativeTransform = [[1, 0, spacex], [0, 1, spacey]] };
+//creating elements 
+let cover: PageNode;
+let frame: FrameNode;
+let head: TextNode;
+let desc: TextNode;
+let stat: TextNode;
+let tagBg: RectangleNode;
 
-let xCalculator = (container: FrameNode, element: TextNode) => {
+//  Positioning Functions 
+let setPosition = (node: TextNode| RectangleNode , spacex: number, spacey: number) => { node.x = spacex, node.y = spacey };
+
+let xCalculator = (container: FrameNode, element: TextNode| RectangleNode) => {
   return ((container.width / 2) - (element.width / 2));
 }
-let yCalculator = (container: FrameNode, element: TextNode) => {
-  return ((container.height / 2) - (element.height / 2));
+let yCalculator = (container: FrameNode, height: number) => {
+  return (
+    ((container.height) - height)/2
+    );
 }
 
+//load Fonts
+
+
 let loadFontHead = async (msg) => {
- 
   await figma.loadFontAsync({ family: "Roboto", style: "Bold" });
   head.fontName = { family: "Roboto", style: "Bold" };
   head.characters = msg.name;
   head.fontSize = 74;
   head.textAlignHorizontal = "CENTER";
+  head.resize(800, head.height);
+}
+
+
+let loadFontDesc = async (msg) => {
+  await figma.loadFontAsync({ family: "Roboto", style: "Regular" });
+  desc.fontSize = 36;
+  desc.resize(800, desc.height);
+  desc.characters = msg.desc;
+}
+
+
+let loadStat = async (msg) => {
+
+  await figma.loadFontAsync({ family: "Roboto", style: "Bold" });
+  stat.fontName = { family: "Roboto", style: "Regular" };
+  stat.characters = msg.status;
+  stat.fontSize = 24;
+  stat.textAlignHorizontal = "CENTER";
+
+  let tagBgWidth = stat.width + 30;
+  let tagBgHeight = stat.height + 30; 
+
+  tagBg.resize(tagBgWidth, tagBgHeight);
+  tagBg.cornerRadius = 500;
+
 
 }
 
 
 
-let loadFontDesc = async (msg) => {
+let setObjects = async (msg) => {
+  await loadFontHead(msg);
+  await loadFontDesc(msg);
+  await loadStat(msg);
 
-  await figma.loadFontAsync({ family: "Roboto", style: "Regular" });
-  desc.fontSize = 36;
-  desc.characters = msg.desc;
   
-  let descX = xCalculator(frame, desc);
   let headX = xCalculator(frame, head);
-  let headY = (yCalculator(frame, head) - 30);
+  let descX = xCalculator(frame, desc);
+  let statX = xCalculator(frame, stat);
+  let tagBgX = xCalculator(frame, tagBg);
+
+ 
+
+  let total:number = head.height+ desc.height + stat.height + 75
+
+  let headY = (yCalculator(frame,total));
   let descY = headY + head.height + 20;
+  let statY = descY + desc.height + 40;
+  let tagBgY = statY - 15;
 
   setPosition(head, headX, headY);
   setPosition(desc, descX, descY);
+  setPosition(stat, statX, statY);
+  setPosition(tagBg, tagBgX, tagBgY);
 
   head.textAlignHorizontal = "CENTER";
+  desc.textAlignHorizontal = "CENTER";
+  stat.textAlignHorizontal = "CENTER";
 
 }
 
 
 figma.ui.onmessage = async (msg) => {
-  frame.resize(1240, 640);
- 
+
+  cover = figma.createPage();
+  frame = figma.createFrame();
+  head = figma.createText();
+  desc = figma.createText();
+  tagBg = figma.createRectangle();
+  stat = figma.createText();
+  
   cover.name = "Cover";
   frame.name = "00"
-  await loadFontHead(msg);
-  await loadFontDesc(msg);
+  frame.resize(1240, 640);
+  figma.root.insertChild(0, cover);
+
+
+  await setObjects(msg);
+
 
   frame.appendChild(head);
   frame.appendChild(desc);
-  cover.appendChild(frame);
-  figma.root.insertChild(0, cover)
-  figma.currentPage = cover;
-  figma.closePlugin();
+  frame.appendChild(tagBg);
+  frame.appendChild(stat);
   
+  cover.appendChild(frame);
+
+  figma.currentPage = cover;
+  figma.notify("Cover Generated")
+  figma.closePlugin();
+
 }
 
 

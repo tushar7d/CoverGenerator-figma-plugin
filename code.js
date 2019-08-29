@@ -6,47 +6,88 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-figma.showUI(__html__, { width: 250, height: 150 });
-let cover = figma.createPage();
-let frame = figma.createFrame();
-let head = figma.createText();
-let desc = figma.createText();
-let setPosition = (node, spacex, spacey) => { node.relativeTransform = [[1, 0, spacex], [0, 1, spacey]]; };
+//creating figma UI
+figma.showUI(__html__, { width: 300, height: 300 });
+//creating elements 
+let cover;
+let frame;
+let head;
+let desc;
+let stat;
+let tagBg;
+//  Positioning Functions 
+let setPosition = (node, spacex, spacey) => { node.x = spacex, node.y = spacey; };
 let xCalculator = (container, element) => {
     return ((container.width / 2) - (element.width / 2));
 };
-let yCalculator = (container, element) => {
-    return ((container.height / 2) - (element.height / 2));
+let yCalculator = (container, height) => {
+    return (((container.height) - height) / 2);
 };
+//load Fonts
 let loadFontHead = (msg) => __awaiter(this, void 0, void 0, function* () {
     yield figma.loadFontAsync({ family: "Roboto", style: "Bold" });
     head.fontName = { family: "Roboto", style: "Bold" };
     head.characters = msg.name;
     head.fontSize = 74;
     head.textAlignHorizontal = "CENTER";
+    head.resize(800, head.height);
 });
 let loadFontDesc = (msg) => __awaiter(this, void 0, void 0, function* () {
     yield figma.loadFontAsync({ family: "Roboto", style: "Regular" });
     desc.fontSize = 36;
+    desc.resize(800, desc.height);
     desc.characters = msg.desc;
-    let descX = xCalculator(frame, desc);
-    let headX = xCalculator(frame, head);
-    let headY = (yCalculator(frame, head) - 30);
-    let descY = headY + head.height + 20;
-    setPosition(head, headX, headY);
-    setPosition(desc, descX, descY);
-    head.textAlignHorizontal = "CENTER";
 });
-figma.ui.onmessage = (msg) => __awaiter(this, void 0, void 0, function* () {
-    frame.resize(1240, 640);
-    cover.name = "Cover";
-    frame.name = "00";
+let loadStat = (msg) => __awaiter(this, void 0, void 0, function* () {
+    yield figma.loadFontAsync({ family: "Roboto", style: "Bold" });
+    stat.fontName = { family: "Roboto", style: "Regular" };
+    stat.characters = msg.status;
+    stat.fontSize = 24;
+    stat.textAlignHorizontal = "CENTER";
+    let tagBgWidth = stat.width + 30;
+    let tagBgHeight = stat.height + 30;
+    tagBg.resize(tagBgWidth, tagBgHeight);
+    tagBg.cornerRadius = 500;
+});
+let setObjects = (msg) => __awaiter(this, void 0, void 0, function* () {
     yield loadFontHead(msg);
     yield loadFontDesc(msg);
+    yield loadStat(msg);
+    let headX = xCalculator(frame, head);
+    let descX = xCalculator(frame, desc);
+    let statX = xCalculator(frame, stat);
+    let tagBgX = xCalculator(frame, tagBg);
+    let total = head.height + desc.height + stat.height + 75;
+    let headY = (yCalculator(frame, total));
+    let descY = headY + head.height + 20;
+    let statY = descY + desc.height + 40;
+    let tagBgY = statY - 15;
+    setPosition(head, headX, headY);
+    setPosition(desc, descX, descY);
+    setPosition(stat, statX, statY);
+    setPosition(tagBg, tagBgX, tagBgY);
+    head.textAlignHorizontal = "CENTER";
+    desc.textAlignHorizontal = "CENTER";
+    stat.textAlignHorizontal = "CENTER";
+});
+figma.ui.onmessage = (msg) => __awaiter(this, void 0, void 0, function* () {
+    cover = figma.createPage();
+    frame = figma.createFrame();
+    head = figma.createText();
+    desc = figma.createText();
+    tagBg = figma.createRectangle();
+    stat = figma.createText();
+    cover.name = "Cover";
+    frame.name = "00";
+    frame.resize(1240, 640);
+    figma.root.insertChild(0, cover);
+    yield setObjects(msg);
     frame.appendChild(head);
     frame.appendChild(desc);
+    frame.appendChild(tagBg);
+    frame.appendChild(stat);
     cover.appendChild(frame);
-    figma.root.insertChild(0, cover);
     figma.currentPage = cover;
+    figma.notify("Cover Generated");
     figma.closePlugin();
 });
