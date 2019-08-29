@@ -42,7 +42,7 @@ let loadFontHead = async (msg) => {
   head.characters = msg.name;
   head.fontSize = 74;
   head.textAlignHorizontal = "CENTER";
-  head.resize(800, head.height);
+  head.resize(900, head.height);
 }
 
 

@@ -38,7 +38,7 @@ let loadFontHead = (msg) => __awaiter(this, void 0, void 0, function* () {
     head.characters = msg.name;
     head.fontSize = 74;
     head.textAlignHorizontal = "CENTER";
-    head.resize(800, head.height);
+    head.resize(900, head.height);
 });
 let loadFontDesc = (msg) => __awaiter(this, void 0, void 0, function* () {
     yield figma.loadFontAsync({ family: "Roboto", style: "Regular" });
