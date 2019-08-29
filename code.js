@@ -23,6 +23,7 @@ let xCalculator = (container, element) => {
 let yCalculator = (container, height) => {
     return (((container.height) - height) / 2);
 };
+//  Color Functions 
 let setColor = (node, color) => {
     function clone(val) {
         return JSON.parse(JSON.stringify(val));
@@ -31,7 +32,7 @@ let setColor = (node, color) => {
     txtfills[0].color = color;
     node.fills = txtfills;
 };
-//load Fonts
+//load Elements
 let loadFontHead = (msg) => __awaiter(this, void 0, void 0, function* () {
     yield figma.loadFontAsync({ family: "Roboto", style: "Bold" });
     head.fontName = { family: "Roboto", style: "Bold" };
@@ -59,6 +60,7 @@ let loadStat = (msg) => __awaiter(this, void 0, void 0, function* () {
     setColor(stat, { r: 1, g: 1, b: 1 });
     setColor(tagBg, { r: 0, g: 90 / 255, b: 235 / 255 });
 });
+// Layout things
 let setObjects = (msg) => __awaiter(this, void 0, void 0, function* () {
     yield loadFontHead(msg);
     yield loadFontDesc(msg);
@@ -80,6 +82,7 @@ let setObjects = (msg) => __awaiter(this, void 0, void 0, function* () {
     desc.textAlignHorizontal = "CENTER";
     stat.textAlignHorizontal = "CENTER";
 });
+// on user action do the following
 figma.ui.onmessage = (msg) => __awaiter(this, void 0, void 0, function* () {
     cover = figma.createPage();
     frame = figma.createFrame();

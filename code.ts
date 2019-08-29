@@ -21,7 +21,7 @@ let yCalculator = (container: FrameNode, height: number) => {
     ((container.height) - height)/2
     );
 }
-
+//  Color Functions 
 let setColor = (node:TextNode| RectangleNode ,color ) =>{
   function clone(val) {
     return JSON.parse(JSON.stringify(val))
@@ -33,7 +33,9 @@ let setColor = (node:TextNode| RectangleNode ,color ) =>{
   node.fills = txtfills
 }
 
-//load Fonts
+
+
+//load Elements
 
 
 let loadFontHead = async (msg) => {
@@ -75,7 +77,7 @@ let loadStat = async (msg) => {
 
 }
 
-
+// Layout things
 
 let setObjects = async (msg) => {
   await loadFontHead(msg);
@@ -108,6 +110,7 @@ let setObjects = async (msg) => {
 
 }
 
+// on user action do the following
 
 figma.ui.onmessage = async (msg) => {
 
