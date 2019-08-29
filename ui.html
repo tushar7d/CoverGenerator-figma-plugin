@@ -25,13 +25,30 @@
 <div style="margin: 20px"></div>
 
 <button id="generate" class='button button--primary'>Generate</button>
+
 <script>
-  selectMenu.init();
+
+  onmessage = (event) =>{
+    if(event.data.pluginMessage == true){
+
+document.getElementById("name").value = "Name";
+document.getElementById("desc").value = "desc";
+
+}
+  }
+
+
+</script>
+
+
+<script>
+
+selectMenu.init();
 document.getElementById('generate').onclick = () => {
     const name = document.getElementById('name').value;
     const desc = document.getElementById('desc').value;
     const status = document.getElementById('select-menu1').value;
     
     parent.postMessage({ pluginMessage: { name, desc, status } }, '*')
-  }
+  };
 </script>

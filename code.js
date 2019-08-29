@@ -1,3 +1,4 @@
+//creating figma UI
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -6,8 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-//creating figma UI
-figma.showUI(__html__, { width: 300, height: 300 });
+let data = figma.root;
 //creating elements 
 let cover;
 let frame;
@@ -48,7 +48,7 @@ let loadFontDesc = (msg) => __awaiter(this, void 0, void 0, function* () {
     desc.characters = msg.desc;
 });
 let loadStat = (msg) => __awaiter(this, void 0, void 0, function* () {
-    yield figma.loadFontAsync({ family: "Roboto", style: "Bold" });
+    yield figma.loadFontAsync({ family: "Roboto", style: "Regular" });
     stat.fontName = { family: "Roboto", style: "Regular" };
     stat.characters = msg.status;
     stat.fontSize = 24;
@@ -81,26 +81,66 @@ let setObjects = (msg) => __awaiter(this, void 0, void 0, function* () {
     head.textAlignHorizontal = "CENTER";
     desc.textAlignHorizontal = "CENTER";
     stat.textAlignHorizontal = "CENTER";
+    stat.name = "status";
+    tagBg.name = "statbg";
 });
 // on user action do the following
-figma.ui.onmessage = (msg) => __awaiter(this, void 0, void 0, function* () {
-    cover = figma.createPage();
-    frame = figma.createFrame();
-    head = figma.createText();
-    desc = figma.createText();
-    tagBg = figma.createRectangle();
-    stat = figma.createText();
-    cover.name = "Cover";
-    frame.name = "00";
-    frame.resize(1240, 640);
-    figma.root.insertChild(0, cover);
-    yield setObjects(msg);
-    frame.appendChild(head);
-    frame.appendChild(desc);
-    frame.appendChild(tagBg);
-    frame.appendChild(stat);
-    cover.appendChild(frame);
-    figma.currentPage = cover;
-    figma.notify("Cover Generated");
-    figma.closePlugin();
+if (figma.root.getPluginData("flag") != "1") {
+    figma.showUI(__html__, { width: 300, height: 300 });
+    console.log(figma.root.getPluginData("flag"));
+    console.log("hello");
+    figma.ui.onmessage = (msg) => __awaiter(this, void 0, void 0, function* () {
+        cover = figma.createPage();
+        frame = figma.createFrame();
+        head = figma.createText();
+        desc = figma.createText();
+        tagBg = figma.createRectangle();
+        stat = figma.createText();
+        cover.name = "Cover";
+        frame.name = "00";
+        frame.resize(1240, 640);
+        figma.root.insertChild(0, cover);
+        yield setObjects(msg);
+        frame.appendChild(head);
+        frame.appendChild(desc);
+        frame.appendChild(tagBg);
+        frame.appendChild(stat);
+        cover.appendChild(frame);
+        figma.currentPage = cover;
+        figma.notify("Cover Generated");
+        figma.root.setPluginData('flag', "1");
+        figma.root.setPluginData('Name', msg.name);
+        figma.root.setPluginData('Description', msg.desc);
+        figma.root.setPluginData('Description', msg.status);
+        figma.closePlugin();
+    });
+}
+else {
+    console.log("closing plugin");
+    figma.showUI(__html__, { width: 300, height: 300 });
+    figma.ui.postMessage(true);
+    figma.ui.onmessage = (msg) => __awaiter(this, void 0, void 0, function* () {
+        let Page = figma.root.findOne(n => n.name === "Cover");
+        figma.currentPage = Page;
+        let Text = figma.currentPage.findOne(n => n.name === "status");
+        let txt = Text;
+        let Bg = figma.currentPage.findOne(n => n.name === "statbg");
+        let bg = Bg;
+        let Fm = figma.currentPage.findOne(n => n.name === "00");
+        let fm = Fm;
+        yield SetText(txt, msg, bg, fm);
+        figma.notify("Cover Updated");
+        figma.closePlugin();
+    });
+}
+let SetText = (txt, msg, bg, fm) => __awaiter(this, void 0, void 0, function* () {
+    yield figma.loadFontAsync({ family: "Roboto", style: "Regular" });
+    txt.characters = msg.status;
+    let tagBgWidth = txt.width + 30;
+    let tagBgHeight = txt.height + 30;
+    bg.resize(tagBgWidth, tagBgHeight);
+    let statX = xCalculator(fm, txt);
+    let tagBgX = xCalculator(fm, bg);
+    setPosition(txt, statX, txt.y);
+    setPosition(bg, tagBgX, bg.y);
 });
