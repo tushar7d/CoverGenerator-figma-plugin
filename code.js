@@ -23,6 +23,14 @@ let xCalculator = (container, element) => {
 let yCalculator = (container, height) => {
     return (((container.height) - height) / 2);
 };
+let setColor = (node, color) => {
+    function clone(val) {
+        return JSON.parse(JSON.stringify(val));
+    }
+    let txtfills = clone(node.fills);
+    txtfills[0].color = color;
+    node.fills = txtfills;
+};
 //load Fonts
 let loadFontHead = (msg) => __awaiter(this, void 0, void 0, function* () {
     yield figma.loadFontAsync({ family: "Roboto", style: "Bold" });
@@ -48,15 +56,8 @@ let loadStat = (msg) => __awaiter(this, void 0, void 0, function* () {
     let tagBgHeight = stat.height + 30;
     tagBg.resize(tagBgWidth, tagBgHeight);
     tagBg.cornerRadius = 500;
-    function clone(val) {
-        return JSON.parse(JSON.stringify(val));
-    }
-    let txtfills = clone(stat.fills);
-    txtfills[0].color = { r: 1, g: 1, b: 1 };
-    stat.fills = txtfills;
-    let Bgfills = clone(tagBg.fills);
-    Bgfills[0].color = { r: 0, g: 90 / 255, b: 235 / 255 };
-    tagBg.fills = Bgfills;
+    setColor(stat, { r: 1, g: 1, b: 1 });
+    setColor(tagBg, { r: 0, g: 90 / 255, b: 235 / 255 });
 });
 let setObjects = (msg) => __awaiter(this, void 0, void 0, function* () {
     yield loadFontHead(msg);

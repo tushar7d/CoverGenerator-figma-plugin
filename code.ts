@@ -22,6 +22,17 @@ let yCalculator = (container: FrameNode, height: number) => {
     );
 }
 
+let setColor = (node:TextNode| RectangleNode ,color ) =>{
+  function clone(val) {
+    return JSON.parse(JSON.stringify(val))
+  }
+ 
+
+  let txtfills = clone(node.fills);
+  txtfills[0].color = color;
+  node.fills = txtfills
+}
+
 //load Fonts
 
 
@@ -57,17 +68,10 @@ let loadStat = async (msg) => {
   tagBg.resize(tagBgWidth, tagBgHeight);
   tagBg.cornerRadius = 500;
 
-  function clone(val) {
-    return JSON.parse(JSON.stringify(val))
-  }
 
-  let txtfills = clone(stat.fills);
-  txtfills[0].color = {r:1,g:1,b: 1}
-  stat.fills = txtfills
+  setColor(stat, { r:1,g:1,b: 1});
+  setColor(tagBg, { r: 0 , g:90/255,b: 235/255});
   
-  let Bgfills = clone(tagBg.fills);
-  Bgfills[0].color = {r:0,g:90/255,b: 235/255}
-  tagBg.fills = Bgfills
 
 }
 
